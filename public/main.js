@@ -11,7 +11,9 @@ form.addEventListener('submit', e => {
         try {
             const response = await fetch(endpoint);
             
+            
             const json = await response.json();
+            
             
             const temperature = json.temperature;
             h1.innerHTML = `It is ${temperature} &#176F in ${zipCode}.`;

@@ -1,8 +1,11 @@
-const path = require('path');
-const express = require('express');
-const zipdb = require('zippity-do-dah');
-const http = require('http');
-const fetch = require('node-fetch');
+import path, { dirname } from 'path';
+import express from 'express';
+import zipdb from 'zippity-do-dah';
+import http from 'http';
+import fetch from 'node-fetch';
+import { fileURLToPath } from 'url';
+
+const __dirname = fileURLToPath(dirname(import.meta.url));
 
 const app = express();
 const OPEN_WEATHER_API_KEY = '72e691cc8e68804d3b51462e3f5c963f';
@@ -47,24 +50,45 @@ app.get(/^\/(\d{5})$/, (req, res, next) => {
     // next();
     // });
 
-   // Alternate use of node-fetch
-    (async () => {
-        try {
-            const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=imperial`);
-            const data = await response.json();
-            res.json({
-                zipcode: zipcode,
-                temperature: JSON.parse(data).main.temp,
-            });
-        } catch (err) {
-            next();
-        }
-    })();
+
+//    Alternate use of node-fetch
+    // (async () => {
+    //     try {
+    //         const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=imperial`);
+    //         const data = await response.json();
+                        
+    //         res.json({
+    //             zipcode: zipcode,
+    //             temperature: data.main.temp,
+    //         });
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // })();
+
+    // node-fetch with regular promises
+    fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
+    .then(response => response.json())
+    .then(data => res.json({
+        zipcode,
+        temperature: data.main.temp,
+    }))
+    .catch(err => console.error(err));
 });
+
+
+
 
 app.use((req, res) => {
     res.status(404).render('404');
 });
 
-app.listen(8080);
+let port = process.env.PORT;
+if (port == null || port == '') {
+    port = 8000;
+}
+app.listen(port);
+
+
+
 
