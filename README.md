@@ -15,7 +15,7 @@ A simple app that returns the temperature in degrees Fahrenheit at a United Stat
 | Only runs locally                                   | Deployed via Heroku                                                 |
 
 ### Links
-- [Live Site](https://obscure-refuge-38884.herokuapp.com/)
+- [Live Site](https://safe-stream-64674.herokuapp.com/)
 - [Repo](https://github.com/mattdimicelli/temp_by_zipcode_node)
 
 ## My process
