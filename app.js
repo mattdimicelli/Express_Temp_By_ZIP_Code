@@ -1,3 +1,4 @@
+import nconf from 'nconf';
 import path, { dirname } from 'path';
 import express from 'express';
 import zipdb from 'zippity-do-dah';
@@ -5,10 +6,11 @@ import http from 'http';
 import fetch from 'node-fetch';
 import { fileURLToPath } from 'url';
 
+nconf.env().file('./config.json');
+
 const __dirname = fileURLToPath(dirname(import.meta.url));
 
 const app = express();
-const OPEN_WEATHER_API_KEY = '72e691cc8e68804d3b51462e3f5c963f';
 
 app.use(express.static(path.resolve(__dirname, 'public')));
 
@@ -30,7 +32,7 @@ app.get(/^\/(\d{5})$/, (req, res, next) => {
     const {latitude, longitude} = location;
     
 
-    // http.get(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=imperial`
+    // http.get(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${nconf.get('OPEN_WEATHER_API_KEY')}&units=imperial`
     // , resp => {
     //     let data = '';
 
@@ -54,7 +56,7 @@ app.get(/^\/(\d{5})$/, (req, res, next) => {
 //    Alternate use of node-fetch
     // (async () => {
     //     try {
-    //         const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=imperial`);
+    //         const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${nconf.get('OPEN_WEATHER_API_KEY')}&units=imperial`);
     //         const data = await response.json();
                         
     //         res.json({
@@ -67,7 +69,7 @@ app.get(/^\/(\d{5})$/, (req, res, next) => {
     // })();
 
     // node-fetch with regular promises
-    fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${OPEN_WEATHER_API_KEY}&units=imperial`)
+    fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${nconf.get('OPEN_WEATHER_API_KEY')}&units=imperial`)
     .then(response => response.json())
     .then(data => res.json({
         zipcode,
